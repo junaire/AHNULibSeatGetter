@@ -1,25 +1,20 @@
-from SeatReserve import Reserver
 import tkinter as tk
 import tkinter.messagebox
 from tkinter import ttk
+
+from reserver import Reserver
+from seatgetter import SeatGetter
 
 
 window = tk.Tk()
 window.title("Fuck AHNU Library Seat Reservation")
 window.geometry("500x300")
 
-"""
-photo = tk.PhotoImage(file=r"D:\\python-projects\\LibraryReservation\\bg.gif")
-l = tk.Label(window, image=photo)
-l.pack()
-"""
 
 message = tk.Label(window,text="please enter your student id:",font=("Arial",12))
 message.pack()
 student_id = tk.Entry(window)
 student_id.pack()
-
-
 
 
 message = tk.Label(window,text="please choose the room:",font=("Arial",12))
@@ -49,7 +44,15 @@ message = tk.Label(window,text="please choose end time",font=("Arial",12))
 message.pack()
 end_time = ttk.Combobox(window)
 end_time.pack()
-end_time["value"] = ('8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00')
+end_time["value"] = ('8:00','8:30','9:00','9:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00')
+
+
+message = tk.Label(window,text="please choose date",font=("Arial",12))
+message.pack()
+date = ttk.Combobox(window)
+date.pack()
+date["value"] = ('Today','Tomorrow','The day after tomorrow')
+
 
 def print_error(message):
     tk.messagebox.showerror(title='Error', message=message)
@@ -70,17 +73,31 @@ def parse_room_code(room):
     return rooms[room]
 
 def run():
-    reserver = Reserver(student_id.get())
-    login_staus = reserver.login()
-    if not login_staus:
-        print_error("Shit! Login failed!")
-         
-    seats = reserver.choose_seat(parse_room_code(room.get()))
-    reserve_status = reserver.reserve_seat(seats,start_time.get(),end_time.get())
-    if not reserve_status:
-        print_error("Shit! Seat reserve failed! They may all be token!")
+    reserver = Reserver()
+    seat_getter = SeatGetter(student_id.get())
+
+    date_data = date.get()
+    if date_data == 'Today':
+        date_offset = 0
+    elif date_data == 'Tomorrow':
+        date_offset = 1
+    elif date_data == 'The day after tomorrow':
+        date_offset = 2
     else:
-        print_info("Congratulations! Seat was reserved successfully!")
+        date_offset = 0
+
+    url, seats = seat_getter.choose_seat(parse_room_code(room.get()))
+    if not seats:
+        print_error("Unkown Error!")
+        return
+    
+    for seat in seats:
+        reserve_status = reserver.reserve(seat,0,start_time.get(),end_time.get())
+        if not reserve_status:
+            print_error("Shit! Seat reserve failed! They may all be token!")
+            break
+        else:
+            print_info("Congratulations! Seat was reserved successfully!")
 
 
 b = tk.Button(window, text='Reserve', font=('Arial', 12), width=10, height=1, command=run)
