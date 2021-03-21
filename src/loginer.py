@@ -50,8 +50,3 @@ class Loginer:
             return self.session
         else:
             return None
-
-if __name__ == "__main__":
-    loginer = Loginer(20111304053,20111304053)
-    if loginer.login():
-        print(1)
