@@ -2,7 +2,8 @@ import requests
 import datetime
 
 class Reserver:
-    def __init__(self):
+    def __init__(self,session):
+        self.session = session
         self.reserve_url = "http://libzwxt.ahnu.edu.cn/SeatWx/ajaxpro/SeatManage.Seat,SeatManage.ashx"
         self.headers = {
         'Proxy-Connection': 'keep-alive',
@@ -19,7 +20,7 @@ class Reserver:
 
     def choose_time(self, date_offset, start_time, end_time):
         today = datetime.date.today()
-        date = today + datetime.timedelta(days=date_offset)
+        date = today + datetime.timedelta(days=int(date_offset))
 
         start = str(date) + " " + str(start_time)
         end   = str(date) + " " + str(end_time)
@@ -29,7 +30,7 @@ class Reserver:
 
         data = '{"sid":"%d","atDate":"%s","st":"%s","et":"%s"}' % (int(seat_code),str(date), str(start_time), str(end_time))
         try:
-            response = self.session.post(url=self.reserve_url,headers=headers,data=data,verify=False)
+            response = self.session.post(url=self.reserve_url,headers=self.headers,data=data,verify=False)
             if "预约成功" in response.text:
                 return True
             else:
@@ -40,4 +41,7 @@ class Reserver:
 
     def reserve(self,seat_code, date_offset, start_time, end_time):
         date, start, end = self.choose_time(date_offset, start_time, end_time)
-        self._reserve_seat(seat_code, date, start, end)
+        if self._reserve_seat(seat_code, date, start, end):
+            return True
+        else:
+            return False

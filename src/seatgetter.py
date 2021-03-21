@@ -4,9 +4,9 @@ from lxml import etree
 from loginer import Loginer
 
 class SeatGetter:
-    def __init__(self,student_id):
+    def __init__(self,student_id,session):
         self.student_id = student_id
-        self.session = None 
+        self.session = session 
         self.headers = {
             'Proxy-Connection': 'keep-alive',
             'Pragma': 'no-cache',
@@ -31,13 +31,8 @@ class SeatGetter:
             '4g2':'http://libzwxt.ahnu.edu.cn/SeatWx/Room.aspx?rid=16&fid=10',
             }
 
-   
-    def _get_session(self):
-        loginer = Loginer(self.student_id, self.student_id)
-        self.session = loginer.login()
 
     def choose_seat(self,room_code):
-        self._get_session()
         try:
             room_url = self.room_urls[room_code]
             response = self.session.get(url=room_url, headers=self.headers)
