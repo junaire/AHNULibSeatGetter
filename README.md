@@ -6,7 +6,8 @@
 ## 使用
 
 ### Windows用户
-已打包成exe，直接双击打开即可。（打开速度·可能比较慢，请耐心等待）
+已打包成exe，直接双击打开即可。（打开速度可能比较慢，请耐心等待）
+查看[最新版本](https://github.com/nailu0/LibraryReservation/releases)
 
 ### 命令行使用
 ```
