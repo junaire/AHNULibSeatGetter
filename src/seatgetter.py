@@ -1,12 +1,10 @@
 import re
 import requests
 from lxml import etree
-from loginer import Loginer
 
 class SeatGetter:
-    def __init__(self,student_id,session):
-        self.student_id = student_id
-        self.session = session 
+    def __init__(self, session):
+        self.session = session
         self.headers = {
             'Proxy-Connection': 'keep-alive',
             'Pragma': 'no-cache',
@@ -18,6 +16,7 @@ class SeatGetter:
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Accept-Language': 'zh-CN,zh;q=0.9,en-CN;q=0.8,en;q=0.7',
             }
+
         self.room_urls = {
             '2s': 'http://libzwxt.ahnu.edu.cn/SeatWx/Room.aspx?rid=1&fid=1',
             '2n': '',
@@ -44,8 +43,9 @@ class SeatGetter:
                 seat_state = ''.join(seat.xpath("@data-state"))
                 if seat_state == '0':
                     seat_url = ''.join(seat.xpath("./a/@href"))
-                    seat_code = re.search(r'sid=(\d*)\b', seat_url).group(1)
-                    seats_list.append(seat_code)
+                    seat_code = re.search(r'sid=(\d*)\b', seat_url)
+                    if seat_code:
+                        seats_list.append(seat_code.group(1))
 
         except Exception as e:
             print(e)

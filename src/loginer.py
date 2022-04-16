@@ -19,7 +19,6 @@ class Loginer:
             'Accept-Language': 'zh-CN,zh;q=0.9,en-CN;q=0.8,en;q=0.7',
             }
 
-
     def _get_view_code(self):
         data = {
             'tbUserName': self.username,
@@ -27,16 +26,20 @@ class Loginer:
             'Button1': '\u767B \u5F55  ',
             'hfurl': ''
         }
-
         response = self.session.post(url=self.login_url,headers=self.headers,data=data)
+
         if response.status_code == 200:
             html = etree.HTML(response.text)
             view_code = html.xpath("//input/@value")
             return view_code
+        return None
 
 
     def login(self):
         view_code = self._get_view_code()
+        if not view_code:
+            print("Can't get view code")
+            exit(-1)
 
         data = {
             '__VIEWSTATE':view_code[0],
