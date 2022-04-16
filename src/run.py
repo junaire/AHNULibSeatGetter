@@ -1,5 +1,6 @@
 from helper import Helper
 s_id = input("Please input your student id: ")
+s_passwd = input("Please input your passwd: ")
 print("Today ==================== 0")
 print("Tomorrow ================= 1")
 print("The day after tomorrow === 2")
@@ -17,8 +18,7 @@ print("4楼公共E: 4g1")
 print("4楼公共W:4g2")
 room_code = input("Please choose room: ")
 
-helper = Helper(s_id)
-
+helper = Helper(s_id, s_passwd)
 res = helper.run(room_code,date_offset,s_time,e_time)
 
 if res:

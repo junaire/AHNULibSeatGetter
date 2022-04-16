@@ -47,6 +47,7 @@ class SeatGetter:
                     seat_code = re.search(r'sid=(\d*)\b', seat_url).group(1)
                     seats_list.append(seat_code)
 
-        except:
-            return False
+        except Exception as e:
+            print(e)
+            exit(-1)
         return room_url, seats_list

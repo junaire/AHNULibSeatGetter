@@ -4,9 +4,8 @@ from loginer import Loginer
 
 
 class Helper:
-    def __init__(self,student_id):
-        
-        self.loginer = Loginer(student_id,student_id)
+    def __init__(self,student_id, passwd):
+        self.loginer = Loginer(student_id, passwd)
         session = self.loginer.login()
         self.reserver = Reserver(session)
         self.seat_getter = SeatGetter(student_id,session)
@@ -18,7 +17,6 @@ class Helper:
             if reserve_status:
                 return True
         return False
-            
 
     def run(self,room_code,date_number,start_time,end_time):
         flag = self._reserve_all(room_code,date_number,start_time,end_time)

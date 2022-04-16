@@ -1,7 +1,7 @@
 import requests
 from lxml import etree
 class Checker:
-    def check(seat_url):
+    def check(self, seat_url):
         response = requests.get(seat_url)
-        html = etree.HTML(respsonse.content)
+        html = etree.HTML(response.content)
         times = html.xpath("//ul[@class='ulTimes']/li")

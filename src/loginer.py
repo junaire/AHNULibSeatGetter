@@ -5,7 +5,8 @@ class Loginer:
         self.username = username
         self.password = password
         self.session  = requests.Session();
-        self.login_url = "http://libzwxt.ahnu.edu.cn/SeatWx/login.aspx?url=http%3a%2f%2flibzwxt.ahnu.edu.cn%2fSeatWx%2findex.aspx"
+        self.session.trust_env = False
+        self.login_url = "http://libzwxt.ahnu.edu.cn/SeatWx/login.aspx"
         self.headers = {
             'Proxy-Connection': 'keep-alive',
             'Pragma': 'no-cache',
@@ -24,7 +25,7 @@ class Loginer:
             'tbUserName': self.username,
             'tbPassWord': self.password,
             'Button1': '\u767B \u5F55  ',
-            'hfurl': 'http%3a%2f%2flibzwxt.ahnu.edu.cn%2fSeatWx%2findex.aspx'
+            'hfurl': ''
         }
 
         response = self.session.post(url=self.login_url,headers=self.headers,data=data)
@@ -36,6 +37,7 @@ class Loginer:
 
     def login(self):
         view_code = self._get_view_code()
+
         data = {
             '__VIEWSTATE':view_code[0],
             '__VIEWSTATEGENERATOR': view_code[1],
@@ -43,7 +45,7 @@ class Loginer:
             'tbUserName': self.username,
             'tbPassWord': self.password,
             'Button1': '\u767B \u5F55  ',
-            'hfurl': 'http%3a%2f%2flibzwxt.ahnu.edu.cn%2fSeatWx%2findex.aspx'
+            'hfurl': ''
         }
         response = self.session.post(url=self.login_url,headers=self.headers,data=data)
         if response.status_code == 200:
