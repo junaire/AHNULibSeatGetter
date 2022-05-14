@@ -11,14 +11,27 @@
 
 ## 使用
 
-目前暂时只支持使用命令行使用，后期会逐步完善。
-
-为了使用此工具，你必须先安装Python3，接着：
-
+为了使用此工具，你必须先安装Python3，并安装相关依赖。
 ```bash
 pip3 install --user -r requirements.txt # 安装必要的依赖
-python3 src/run.py # 运行脚本
 ```
+
+### 命令行使用
+```bash
+python3 src/run.py
+```
+
+### GUI 使用
+```bash
+python3 src/gui.py
+```
+
+## 自行打包
+```bash
+cd src
+pyinstaller -F -w gui.py -p helper.py -p loginer.py -p reserver.py -p seatgetter.py --hidden-import Helper --hidden-import Loginer --hidden-import SeatGetter
+```
+可执行文件将在`dist`目录下。
 
 ## 贡献
 如果你发现本工具有任何的Bug或者有想要实现的功能，欢迎提交Issue或者PR :)
