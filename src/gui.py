@@ -6,22 +6,60 @@ from helper import Helper
 
 window = tk.Tk()
 window.title("Fuck AHNU Library Seat Reservation")
-window.geometry("500x500")
+window.geometry("300x400")
 
 
-message = tk.Label(window, text="please enter your student id:", font=("Arial", 12))
-message.pack()
+def place_label(text):
+    message = tk.Label(window, text=text, font=("Arial", 12))
+    message.pack()
+
+
+def print_error(message):
+    tk.messagebox.showerror(title="Error", message=message)
+
+
+def print_info(message):
+    tk.messagebox.showinfo(title="Info", message=message)
+
+
+def parse_room_code(room):
+    rooms = {
+        "花津2楼南": "2s",
+        "花津3楼南": "3s",
+        "花津3楼北": "3n",
+        "花津4楼南": "4s",
+        "花津4楼北": "4n",
+        "3楼公共E": "3g1",
+        "3楼公共W": "3g2",
+        "4楼公共E": "4g1",
+        "4楼公共W": "4g2",
+    }
+    return rooms[room]
+
+
+def parse_date(date_str):
+    if date_str == "Today":
+        return 0
+    elif date_str == "Tomorrow":
+        return 1
+    elif date_str == "The day after tomorrow":
+        return 2
+
+
+place_label("please enter your student id:")
 student_id = tk.Entry(window)
 student_id.pack()
 
-message = tk.Label(window, text="please choose date", font=("Arial", 12))
-message.pack()
+place_label("please enter your password:")
+password = tk.Entry(window)
+password.pack()
+
+place_label("please choose date")
 date = ttk.Combobox(window)
 date.pack()
 date["value"] = ("Today", "Tomorrow", "The day after tomorrow")
 
-message = tk.Label(window, text="please choose the room:", font=("Arial", 12))
-message.pack()
+place_label("please choose the room:")
 room = ttk.Combobox(window)
 room.pack()
 room["value"] = (
@@ -37,8 +75,7 @@ room["value"] = (
 )
 
 
-message = tk.Label(window, text="please choose start time", font=("Arial", 12))
-message.pack()
+place_label("please choose start time")
 start_time = ttk.Combobox(window)
 start_time.pack()
 start_time["value"] = (
@@ -72,8 +109,7 @@ start_time["value"] = (
 )
 
 
-message = tk.Label(window, text="please choose end time", font=("Arial", 12))
-message.pack()
+place_label("please choose end time")
 end_time = ttk.Combobox(window)
 end_time.pack()
 end_time["value"] = (
@@ -109,68 +145,15 @@ end_time["value"] = (
 )
 
 
-def print_error(message):
-    tk.messagebox.showerror(title="Error", message=message)
-
-
-def print_info(message):
-    tk.messagebox.showinfo(title="Info", message=message)
-
-
-def parse_room_code(room):
-    rooms = {
-        "花津2楼南": "2s",
-        "花津3楼南": "3s",
-        "花津3楼北": "3n",
-        "花津4楼南": "4s",
-        "花津4楼北": "4n",
-        "3楼公共E": "3g1",
-        "3楼公共W": "3g2",
-        "4楼公共E": "4g1",
-        "4楼公共W": "4g2",
-    }
-    return rooms[room]
-
-
-def check_input(raw_student_id, raw_date, raw_room_code, raw_start_time, raw_end_time):
-    if (
-        raw_student_id
-        and raw_date
-        and raw_room_code
-        and raw_start_time
-        and raw_end_time
-    ):
-        if raw_date == "Today":
-            date_code = 0
-        elif raw_date == "Tomorrow":
-            date_code = 1
-        elif raw_date == "The day after tomorrow":
-            date_code = 2
-        else:
-            date_code = 0
-
-        return (
-            True,
-            raw_student_id,
-            date_code,
-            raw_room_code,
-            raw_start_time,
-            raw_end_time,
-        )
-    return False, None, None, None, None, None
-
-
 def run():
-    input_status, s_id, date_offset, room_code, s_time, e_time = check_input(
-        student_id.get(), date.get(), room.get(), start_time.get(), end_time.get()
+    helper = Helper(student_id.get(), password.get())
+
+    res = helper.run(
+        parse_room_code(room.get()),
+        parse_date(date.get()),
+        start_time.get(),
+        end_time.get(),
     )
-    if not input_status:
-        print_error("Input in incomplete!")
-        return
-
-    helper = Helper(s_id)
-
-    res = helper.run(parse_room_code(room_code), date_offset, s_time, e_time)
 
     if res:
         print_info("Congradulations! :)")
@@ -178,9 +161,7 @@ def run():
         print_error("Shit! I failed :(")
 
 
-b = tk.Button(
-    window, text="Reserve", font=("Arial", 12), width=10, height=1, command=run
-)
+b = tk.Button(window, text="Go", font=("Arial", 12), width=10, height=1, command=run)
 b.pack()
 
 window.mainloop()
